@@ -14,7 +14,7 @@ import serial, threading
 
 global ser
 ser = serial.Serial(
-    port='COM8',\
+    port='COM10',\
     baudrate=115200, \
     parity=serial.PARITY_NONE, \
     stopbits=serial.STOPBITS_ONE, \
@@ -42,6 +42,9 @@ class Ui_MainWindow(object):
 
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1000, 620)
+        self.Port = QtWidgets.QComboBox(MainWindow)
+        self.Port.setGeometry(QtCore.QRect(10, 580, 381, 31))
+        self.Port.setObjectName("Port")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.stop_btn = QtWidgets.QPushButton(self.centralwidget)
@@ -223,7 +226,7 @@ class Ui_MainWindow(object):
         self.pause_btn_4.clicked.connect(lambda: self.Pause4())
         self.pause_btn_5.clicked.connect(lambda: self.Pause5())
         self.pause_btn_6.clicked.connect(lambda: self.Pause6())
-
+        self.Port.addItems(lambda :self.serial_ports())
 
 
     def Pause1(self):
@@ -289,6 +292,28 @@ class Ui_MainWindow(object):
         self.label_4.setText(text4)
         self.label_5.setText(text5)
         self.label_6.setText(text6)
+
+    def serial_ports(self):
+        """ Lists serial port names
+            :raises EnvironmentError:
+                On unsupported or unknown platforms
+            :returns:
+                A list of the serial ports available on the system
+        """
+        if sys.platform.startswith('win'):
+            ports = ['COM%s' % (i + 1) for i in range(256)]
+        else:
+            raise EnvironmentError('Unsupported platform')
+
+        result = []
+        for port in ports:
+            try:
+                s = serial.Serial(port)
+                s.close()
+                result.append(port)
+            except (OSError, serial.SerialException):
+                pass
+        return result
 
 if __name__ == "__main__":
     import sys
