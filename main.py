@@ -14,8 +14,8 @@ import serial, threading
 
 global ser
 ser = serial.Serial(
-    port='COM8',\
-    baudrate=115200, \
+    port='COM4',\
+    baudrate=9600, \
     parity=serial.PARITY_NONE, \
     stopbits=serial.STOPBITS_ONE, \
     bytesize=serial.EIGHTBITS, \
@@ -41,7 +41,8 @@ class Ui_MainWindow(object):
         self.t = ser.readline().decode('utf-8')
 
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1000, 620)
+        # MainWindow.resize(1000, 620)
+        MainWindow.showMaximized()
         self.Port = QtWidgets.QComboBox(MainWindow)
         self.Port.setGeometry(QtCore.QRect(10, 580, 381, 31))
         self.Port.setObjectName("Port")
@@ -51,6 +52,10 @@ class Ui_MainWindow(object):
         self.stop_btn.setGeometry(QtCore.QRect(760, 560, 75, 23))
         self.stop_btn.setStyleSheet("background-color: rgb(255, 85, 0);")
         self.stop_btn.setObjectName("stop_btn")
+        self.reset_btn = QtWidgets.QPushButton(self.centralwidget)
+        self.reset_btn.setGeometry(QtCore.QRect(870, 560, 75, 23))
+        self.reset_btn.setStyleSheet("background-color: rgb(0, 85, 0);")
+        self.reset_btn.setObjectName("reset_btn")
         self.start_btn = QtWidgets.QPushButton(self.centralwidget)
         self.start_btn.setGeometry(QtCore.QRect(650, 560, 75, 23))
         self.start_btn.setStyleSheet("background-color: rgb(85, 170, 127)")
@@ -159,7 +164,6 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
-
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -170,6 +174,7 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.stop_btn.setText(_translate("MainWindow", "Стоп"))
         self.start_btn.setText(_translate("MainWindow", "Старт"))
+        self.reset_btn.setText(_translate("MainWindow", "Сброс"))
         self.label.setText(_translate("MainWindow", "TextLabel"))
         self.label_2.setText(_translate("MainWindow", "TextLabel"))
         self.label_3.setText(_translate("MainWindow", "TextLabel"))
@@ -186,31 +191,7 @@ class Ui_MainWindow(object):
         self.add_functions()
         self.check_serial_event()
 
-    def check_serial_event(self):
-        serial_thread = threading.Timer(1, self.check_serial_event)
-        if ser.is_open == True:
-            serial_thread.start()
-            if ser.in_waiting:
-                t = ser.readline().decode('utf-8')
-                t = t[:t.find(';')]
-                print(t)
-                # if t == "1":
-                #     self.Pause1()
-                #
-                # if t == "2":
-                #     self.Pause2()
-                #
-                # if t == "3":
-                #     self.Pause3()
-                #
-                # if t == "4":
-                #     self.Pause4()
-                #
-                # if t == "5":
-                #     self.Pause5()
-                #
-                # if t == "6":
-                #     self.Pause6()
+
 
     def add_functions(self):
         self.timer = QTimer(self.centralwidget)
@@ -219,7 +200,8 @@ class Ui_MainWindow(object):
         # # update the timer every tenth second
         self.timer.start(10)
         self.start_btn.clicked.connect(lambda: self.Start())
-        self.stop_btn.clicked.connect(lambda: self.Reset())
+        self.stop_btn.clicked.connect(lambda: self.Stop())
+        self.reset_btn.clicked.connect(lambda: self.Reset())
         self.pause_btn_1.clicked.connect(lambda: self.Pause1())
         self.pause_btn_2.clicked.connect(lambda: self.Pause2())
         self.pause_btn_3.clicked.connect(lambda: self.Pause3())
@@ -255,13 +237,27 @@ class Ui_MainWindow(object):
         self.flag5 = True
         self.flag6 = True
 
-    def Reset(self):
+    def Stop(self):
         self.flag1 = False
         self.flag2 = False
         self.flag3 = False
         self.flag4 = False
         self.flag5 = False
         self.flag6 = False
+
+    def Reset(self):
+        self.flag1 = False
+        self.counter1 = 0
+        self.flag2 = False
+        self.counter2 = 0
+        self.flag3 = False
+        self.counter3 = 0
+        self.flag4 = False
+        self.counter4 = 0
+        self.flag5 = False
+        self.counter5 = 0
+        self.flag6 = False
+        self.counter6 = 0
 
     def showTime(self):
         # checking if flag is true
@@ -292,28 +288,53 @@ class Ui_MainWindow(object):
         self.label_4.setText(text4)
         self.label_5.setText(text5)
         self.label_6.setText(text6)
+    def check_serial_event(self):
+        serial_thread = threading.Timer(0.1, self.check_serial_event)
+        if ser.is_open == True:
+            serial_thread.start()
+            if ser.in_waiting:
+                t = ser.read().decode('utf-8')
+                # t = t[:t.find('/n')]
+                print(t)
+                if t == '1':
+                    self.Pause1()
 
-    def serial_ports(self):
-        """ Lists serial port names
-            :raises EnvironmentError:
-                On unsupported or unknown platforms
-            :returns:
-                A list of the serial ports available on the system
-        """
-        if sys.platform.startswith('win'):
-            ports = ['COM%s' % (i + 1) for i in range(256)]
-        else:
-            raise EnvironmentError('Unsupported platform')
+                if t == '2':
+                    self.Pause2()
 
-        result = []
-        for port in ports:
-            try:
-                s = serial.Serial(port)
-                s.close()
-                result.append(port)
-            except (OSError, serial.SerialException):
-                pass
-        return result
+                if t == "3":
+                    self.Pause3()
+
+                if t == "4":
+                    self.Pause4()
+
+                if t == "5":
+                    self.Pause5()
+
+                if t == "6":
+                    self.Pause6()
+
+    # def serial_ports(self):
+    #     """ Lists serial port names
+    #         :raises EnvironmentError:
+    #             On unsupported or unknown platforms
+    #         :returns:
+    #             A list of the serial ports available on the system
+    #     """
+    #     if sys.platform.startswith('win'):
+    #         ports = ['COM%s' % (i + 1) for i in range(256)]
+    #     else:
+    #         raise EnvironmentError('Unsupported platform')
+    #
+    #     result = []
+    #     for port in ports:
+    #         try:
+    #             s = serial.Serial(port)
+    #             s.close()
+    #             result.append(port)
+    #         except (OSError, serial.SerialException):
+    #             pass
+    #     return result
 
 if __name__ == "__main__":
     import sys
