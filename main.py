@@ -13,6 +13,11 @@ from PyQt5.QtCore import *
 import serial, threading
 
 global ser
+seq = []
+# global places
+places = [0, 30, 120, 210, 300, 390, 480]
+
+
 ser = serial.Serial(
     port='COM4',\
     baudrate=9600, \
@@ -21,10 +26,10 @@ ser = serial.Serial(
     bytesize=serial.EIGHTBITS, \
     timeout=1)
 
-seq = []
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
+        self.counter = 0
         self.counter1 = 0
         self.counter2 = 0
         self.counter3 = 0
@@ -224,21 +229,28 @@ class Ui_MainWindow(object):
 
     def Pause1(self):
         self.flag1 = False
-
+        self.textBrowser.setGeometry(QtCore.QRect(50, places[self.counter], 531, 80))
+        self.label.setGeometry(QtCore.QRect(700, places[self.counter], 150, 50))
     def Pause2(self):
         self.flag2 = False
-
+        self.textBrowser_2.setGeometry(QtCore.QRect(50, places[self.counter], 531, 80))
+        self.label_2.setGeometry(QtCore.QRect(700, places[self.counter], 150, 50))
     def Pause3(self):
         self.flag3 = False
-
+        self.textBrowser_3.setGeometry(QtCore.QRect(50, places[self.counter], 531, 80))
+        self.label_3.setGeometry(QtCore.QRect(700, places[self.counter], 150, 50))
     def Pause4(self):
         self.flag4 = False
-
+        self.textBrowser_4.setGeometry(QtCore.QRect(50, places[self.counter], 531, 80))
+        self.label_4.setGeometry(QtCore.QRect(700, places[self.counter], 150, 50))
     def Pause5(self):
         self.flag5 = False
-
+        self.textBrowser_5.setGeometry(QtCore.QRect(50, places[self.counter], 531, 80))
+        self.label_5.setGeometry(QtCore.QRect(700, places[self.counter], 150, 50))
     def Pause6(self):
         self.flag6 = False
+        self.textBrowser_6.setGeometry(QtCore.QRect(50, places[self.counter], 531, 80))
+        self.label_6.setGeometry(QtCore.QRect(700, places[self.counter], 150, 50))
 
     def Start(self):
         self.flag1 = True
@@ -257,6 +269,7 @@ class Ui_MainWindow(object):
         self.flag6 = False
 
     def Reset(self):
+        self.counter = 0
         self.flag1 = False
         self.counter1 = 0
         self.flag2 = False
@@ -308,21 +321,27 @@ class Ui_MainWindow(object):
                 # t = t[:t.find('/n')]
                 print(t)
                 if t == '1':
+                    self.counter += 1
                     self.Pause1()
 
                 if t == '2':
+                    self.counter += 1
                     self.Pause2()
 
                 if t == "3":
+                    self.counter += 1
                     self.Pause3()
 
                 if t == "4":
+                    self.counter += 1
                     self.Pause4()
 
                 if t == "5":
+                    self.counter += 1
                     self.Pause5()
 
                 if t == "6":
+                    self.counter += 1
                     self.Pause6()
 
     # def serial_ports(self):
