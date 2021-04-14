@@ -14,7 +14,7 @@ import serial, threading
 
 global ser
 ser = serial.Serial(
-    port='COM8',\
+    port='COM10',\
     baudrate=115200, \
     parity=serial.PARITY_NONE, \
     stopbits=serial.STOPBITS_ONE, \
@@ -41,8 +41,7 @@ class Ui_MainWindow(object):
         self.t = ser.readline().decode('utf-8')
 
         MainWindow.setObjectName("MainWindow")
-        # MainWindow.resize(1000, 620)
-        MainWindow.showFullScreen()
+        MainWindow.resize(1000, 620)
         self.Port = QtWidgets.QComboBox(MainWindow)
         self.Port.setGeometry(QtCore.QRect(10, 580, 381, 31))
         self.Port.setObjectName("Port")
@@ -160,6 +159,7 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -217,7 +217,7 @@ class Ui_MainWindow(object):
         # # adding action to timer
         self.timer.timeout.connect(self.showTime)
         # # update the timer every tenth second
-        self.timer.start(10)
+        self.timer.start(93)
         self.start_btn.clicked.connect(lambda: self.Start())
         self.stop_btn.clicked.connect(lambda: self.Reset())
         self.pause_btn_1.clicked.connect(lambda: self.Pause1())
@@ -226,7 +226,7 @@ class Ui_MainWindow(object):
         self.pause_btn_4.clicked.connect(lambda: self.Pause4())
         self.pause_btn_5.clicked.connect(lambda: self.Pause5())
         self.pause_btn_6.clicked.connect(lambda: self.Pause6())
-        # self.Port.addItems(lambda :self.serial_ports())
+        self.Port.addItems(lambda :self.serial_ports())
 
 
     def Pause1(self):
@@ -279,12 +279,12 @@ class Ui_MainWindow(object):
             self.counter6 += 1
 
     # getting text from count
-        text1 = str(self.counter1 / 100)
-        text2 = str(self.counter2 / 100)
-        text3 = str(self.counter3 / 100)
-        text4 = str(self.counter4 / 100)
-        text5 = str(self.counter5 / 100)
-        text6 = str(self.counter6 / 100)
+        text1 = str(self.counter1 / 10)
+        text2 = str(self.counter2 / 10)
+        text3 = str(self.counter3 / 10)
+        text4 = str(self.counter4 / 10)
+        text5 = str(self.counter5 / 10)
+        text6 = str(self.counter6 / 10)
     # showing text
         self.label.setText(text1)
         self.label_2.setText(text2)
