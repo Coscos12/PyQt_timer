@@ -10,21 +10,30 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets, QtSerialPort
 from PyQt5.QtCore import *
-import serial, threading
+# import serial
+import threading
 
 global ser
-ser = serial.Serial(
-    port='COM10',\
-    baudrate=115200, \
-    parity=serial.PARITY_NONE, \
-    stopbits=serial.STOPBITS_ONE, \
-    bytesize=serial.EIGHTBITS, \
-    timeout=1)
-
 seq = []
+# global places
+places = [0, 30, 120, 210, 300, 390, 480]
+new_places = [0, 30, 120, 210, 300, 390, 480]
+
+
+# ser = serial.Serial(
+#     port='COM9',\
+#     baudrate=9600, \
+#     parity=serial.PARITY_NONE, \
+#     stopbits=serial.STOPBITS_ONE, \
+#     bytesize=serial.EIGHTBITS, \
+#     timeout=0)
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
+        # self.texts =[0, textBrowser, textBrowser_2, textBrowser_3, textBrowser_4, textBrowser_5, textBrowser_6]
+        # self.labels = [0, labels, labels_2, labels_3, labels_4, labels_5, labels_6]
+        self.counter = 0
         self.counter1 = 0
         self.counter2 = 0
         self.counter3 = 0
@@ -32,125 +41,173 @@ class Ui_MainWindow(object):
         self.counter5 = 0
         self.counter6 = 0
 
+        self.flag11 = False
+        self.flag12 = False
+        self.flag13 = False
+        self.flag14 = False
+        self.flag15 = False
+        self.flag16 = False
+
         self.flag1 = False
         self.flag2 = False
         self.flag3 = False
         self.flag4 = False
         self.flag5 = False
         self.flag6 = False
-        self.t = ser.readline().decode('utf-8')
+        # self.t = ser.readline().decode('utf-8')
 
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1000, 620)
+        # MainWindow.resize(1000, 620)
+        MainWindow.showMaximized()
+        MainWindow.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.Port = QtWidgets.QComboBox(MainWindow)
         self.Port.setGeometry(QtCore.QRect(10, 580, 381, 31))
         self.Port.setObjectName("Port")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.stop_btn = QtWidgets.QPushButton(self.centralwidget)
-        self.stop_btn.setGeometry(QtCore.QRect(760, 560, 75, 23))
-        self.stop_btn.setStyleSheet("background-color: rgb(255, 85, 0);")
-        self.stop_btn.setObjectName("stop_btn")
         self.start_btn = QtWidgets.QPushButton(self.centralwidget)
-        self.start_btn.setGeometry(QtCore.QRect(650, 560, 75, 23))
+        self.start_btn.setGeometry(QtCore.QRect(1550, 950, 75, 23))
         self.start_btn.setStyleSheet("background-color: rgb(85, 170, 127)")
         self.start_btn.setObjectName("start_btn")
+        self.stop_btn = QtWidgets.QPushButton(self.centralwidget)
+        self.stop_btn.setGeometry(QtCore.QRect(1660, 950, 75, 23))
+        self.stop_btn.setStyleSheet("background-color: rgb(255, 85, 0);")
+        self.stop_btn.setObjectName("stop_btn")
+        self.reset_btn = QtWidgets.QPushButton(self.centralwidget)
+        self.reset_btn.setGeometry(QtCore.QRect(1770, 950, 75, 23))
+        self.reset_btn.setStyleSheet("background-color: rgb(255, 202, 0);")
+        self.reset_btn.setObjectName("reset_btn")
+
         self.label = QtWidgets.QLabel(self.centralwidget)
+        self.label_2 = QtWidgets.QLabel(self.centralwidget)
+        self.label_3 = QtWidgets.QLabel(self.centralwidget)
+        self.label_4 = QtWidgets.QLabel(self.centralwidget)
+        self.label_5 = QtWidgets.QLabel(self.centralwidget)
+        self.label_6 = QtWidgets.QLabel(self.centralwidget)
+
         self.label.setEnabled(True)
-        self.label.setGeometry(QtCore.QRect(700, 30, 150, 50))
+        self.label_2.setEnabled(True)
+        self.label_3.setEnabled(True)
+        self.label_4.setEnabled(True)
+        self.label_5.setEnabled(True)
+        self.label_6.setEnabled(True)
+        #
+        self.label.setGeometry(QtCore.QRect(1700, places[1], 150, 50))
+        self.label_2.setGeometry(QtCore.QRect(1700, places[2], 150, 50))
+        self.label_3.setGeometry(QtCore.QRect(1700, places[3], 150, 50))
+        self.label_4.setGeometry(QtCore.QRect(1700, places[4], 150, 50))
+        self.label_5.setGeometry(QtCore.QRect(1700, places[5], 150, 50))
+        self.label_6.setGeometry(QtCore.QRect(1700, places[6], 150, 50))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(24)
         self.label.setFont(font)
         self.label.setFrameShape(QtWidgets.QFrame.Box)
+        self.label_2.setFrameShape(QtWidgets.QFrame.Box)
+        self.label_3.setFrameShape(QtWidgets.QFrame.Box)
+        self.label_4.setFrameShape(QtWidgets.QFrame.Box)
+        self.label_5.setFrameShape(QtWidgets.QFrame.Box)
+        self.label_6.setFrameShape(QtWidgets.QFrame.Box)
+        self.label.setStyleSheet("background-color: rgb(135, 206,250);")
         self.label.setLineWidth(2)
         self.label.setObjectName("label")
-        self.label_2 = QtWidgets.QLabel(self.centralwidget)
-        self.label_2.setEnabled(True)
-        self.label_2.setGeometry(QtCore.QRect(700, 90, 150, 50))
+        self.label_2.setStyleSheet("background-color: rgb(238, 130, 238);")
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(24)
         self.label_2.setFont(font)
-        self.label_2.setFrameShape(QtWidgets.QFrame.Box)
+
         self.label_2.setLineWidth(2)
         self.label_2.setObjectName("label_2")
-        self.label_3 = QtWidgets.QLabel(self.centralwidget)
-        self.label_3.setEnabled(True)
-        self.label_3.setGeometry(QtCore.QRect(700, 150, 150, 50))
+
+        self.label_3.setStyleSheet("background-color: rgb(255, 0, 0);")
+
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(24)
         self.label_3.setFont(font)
-        self.label_3.setFrameShape(QtWidgets.QFrame.Box)
+
         self.label_3.setLineWidth(2)
         self.label_3.setObjectName("label_3")
-        self.label_4 = QtWidgets.QLabel(self.centralwidget)
-        self.label_4.setEnabled(True)
-        self.label_4.setGeometry(QtCore.QRect(700, 210, 150, 50))
+
+        self.label_4.setStyleSheet("background-color: rgb(255, 255, 0);")
+
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(24)
         self.label_4.setFont(font)
-        self.label_4.setFrameShape(QtWidgets.QFrame.Box)
+
         self.label_4.setLineWidth(2)
         self.label_4.setObjectName("label_4")
-        self.label_5 = QtWidgets.QLabel(self.centralwidget)
-        self.label_5.setEnabled(True)
-        self.label_5.setGeometry(QtCore.QRect(700, 270, 150, 50))
+
+        self.label_5.setStyleSheet("background-color: rgb(0, 100, 255);")
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(24)
         self.label_5.setFont(font)
-        self.label_5.setFrameShape(QtWidgets.QFrame.Box)
+
         self.label_5.setLineWidth(2)
         self.label_5.setObjectName("label_5")
-        self.label_6 = QtWidgets.QLabel(self.centralwidget)
-        self.label_6.setEnabled(True)
-        self.label_6.setGeometry(QtCore.QRect(700, 330, 150, 50))
+
+        self.label_6.setStyleSheet("background-color: rgb(0, 255, 0);")
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(24)
         self.label_6.setFont(font)
-        self.label_6.setFrameShape(QtWidgets.QFrame.Box)
+
         self.label_6.setLineWidth(2)
         self.label_6.setObjectName("label_6")
         self.pause_btn_1 = QtWidgets.QPushButton(self.centralwidget)
-        self.pause_btn_1.setGeometry(QtCore.QRect(880, 40, 75, 23))
+        self.pause_btn_1.setGeometry(QtCore.QRect(1500, 40, 75, 23))
         self.pause_btn_1.setObjectName("pause_btn_1")
         self.pause_btn_2 = QtWidgets.QPushButton(self.centralwidget)
-        self.pause_btn_2.setGeometry(QtCore.QRect(880, 100, 75, 23))
+        self.pause_btn_2.setGeometry(QtCore.QRect(1500, 130, 75, 23))
         self.pause_btn_2.setObjectName("pause_btn_2")
         self.pause_btn_3 = QtWidgets.QPushButton(self.centralwidget)
-        self.pause_btn_3.setGeometry(QtCore.QRect(880, 160, 75, 23))
+        self.pause_btn_3.setGeometry(QtCore.QRect(1500, 220, 75, 23))
         self.pause_btn_3.setObjectName("pause_btn_3")
         self.pause_btn_4 = QtWidgets.QPushButton(self.centralwidget)
-        self.pause_btn_4.setGeometry(QtCore.QRect(880, 220, 75, 23))
+        self.pause_btn_4.setGeometry(QtCore.QRect(1500, 310, 75, 23))
         self.pause_btn_4.setObjectName("pause_btn_4")
         self.pause_btn_5 = QtWidgets.QPushButton(self.centralwidget)
-        self.pause_btn_5.setGeometry(QtCore.QRect(880, 280, 75, 23))
+        self.pause_btn_5.setGeometry(QtCore.QRect(1500, 400, 75, 23))
         self.pause_btn_5.setObjectName("pause_btn_5")
         self.pause_btn_6 = QtWidgets.QPushButton(self.centralwidget)
-        self.pause_btn_6.setGeometry(QtCore.QRect(880, 340, 75, 23))
+        self.pause_btn_6.setGeometry(QtCore.QRect(1500, 490, 75, 23))
         self.pause_btn_6.setObjectName("pause_btn_6")
         self.textBrowser = QtWidgets.QTextEdit(self.centralwidget)
-        self.textBrowser.setGeometry(QtCore.QRect(50, 30, 531, 50))
+        self.textBrowser.setGeometry(QtCore.QRect(50, places[1], 1000, 80))
+        self.textBrowser.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.textBrowser.setObjectName("textBrowser")
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(24)
+        self.textBrowser.setFont(font)
         self.textBrowser_2 = QtWidgets.QTextEdit(self.centralwidget)
-        self.textBrowser_2.setGeometry(QtCore.QRect(50, 90, 531, 50))
+        self.textBrowser_2.setGeometry(QtCore.QRect(50, places[2], 1000, 80))
         self.textBrowser_2.setObjectName("textBrowser_2")
+        self.textBrowser_2.setFont(font)
         self.textBrowser_3 = QtWidgets.QTextEdit(self.centralwidget)
-        self.textBrowser_3.setGeometry(QtCore.QRect(50, 150, 531, 50))
+        self.textBrowser_3.setGeometry(QtCore.QRect(50, places[3], 1000, 80))
         self.textBrowser_3.setObjectName("textBrowser_3")
+        self.textBrowser_3.setFont(font)
         self.textBrowser_4 = QtWidgets.QTextEdit(self.centralwidget)
-        self.textBrowser_4.setGeometry(QtCore.QRect(50, 210, 531, 50))
+        self.textBrowser_4.setGeometry(QtCore.QRect(50, places[4], 1000, 80))
         self.textBrowser_4.setObjectName("textBrowser_4")
+        self.textBrowser_4.setFont(font)
         self.textBrowser_5 = QtWidgets.QTextEdit(self.centralwidget)
-        self.textBrowser_5.setGeometry(QtCore.QRect(50, 270, 531, 50))
+        self.textBrowser_5.setGeometry(QtCore.QRect(50, places[5], 1000, 80))
         self.textBrowser_5.setObjectName("textBrowser_5")
+        self.textBrowser_5.setFont(font)
         self.textBrowser_6 = QtWidgets.QTextEdit(self.centralwidget)
-        self.textBrowser_6.setGeometry(QtCore.QRect(50, 330, 531, 50))
+        self.textBrowser_6.setGeometry(QtCore.QRect(50, places[6], 1000, 80))
         self.textBrowser_6.setObjectName("textBrowser_6")
+        self.textBrowser_6.setFont(font)
+        self.textBrowser_2.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.textBrowser_3.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.textBrowser_4.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.textBrowser_5.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.textBrowser_6.setFrameShape(QtWidgets.QFrame.NoFrame)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1100, 21))
@@ -159,93 +216,143 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
-
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
-
+        # self.serial = QtSerialPort.QSerialPort(
+        #     self,
+        #     readyRead=self.receive
+        # )
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.stop_btn.setText(_translate("MainWindow", "Стоп"))
         self.start_btn.setText(_translate("MainWindow", "Старт"))
+        self.reset_btn.setText(_translate("MainWindow", "Сброс"))
         self.label.setText(_translate("MainWindow", "TextLabel"))
         self.label_2.setText(_translate("MainWindow", "TextLabel"))
         self.label_3.setText(_translate("MainWindow", "TextLabel"))
         self.label_4.setText(_translate("MainWindow", "TextLabel"))
         self.label_5.setText(_translate("MainWindow", "TextLabel"))
         self.label_6.setText(_translate("MainWindow", "TextLabel"))
-        self.pause_btn_1.setText(_translate("MainWindow", "PushButton"))
-        self.pause_btn_2.setText(_translate("MainWindow", "PushButton"))
-        self.pause_btn_3.setText(_translate("MainWindow", "PushButton"))
-        self.pause_btn_4.setText(_translate("MainWindow", "PushButton"))
-        self.pause_btn_5.setText(_translate("MainWindow", "PushButton"))
-        self.pause_btn_6.setText(_translate("MainWindow", "PushButton"))
+        self.pause_btn_1.setText(_translate("MainWindow", "голубой"))
+        self.pause_btn_2.setText(_translate("MainWindow", "розовый"))
+        self.pause_btn_3.setText(_translate("MainWindow", "красный"))
+        self.pause_btn_4.setText(_translate("MainWindow", "желтый"))
+        self.pause_btn_5.setText(_translate("MainWindow", "синий"))
+        self.pause_btn_6.setText(_translate("MainWindow", "зеленый"))
 
         self.add_functions()
         self.check_serial_event()
+        # self.refreshing()
 
-    def check_serial_event(self):
-        serial_thread = threading.Timer(1, self.check_serial_event)
-        if ser.is_open == True:
-            serial_thread.start()
-            if ser.in_waiting:
-                t = ser.readline().decode('utf-8')
-                t = t[:t.find(';')]
-                print(t)
-                # if t == "1":
-                #     self.Pause1()
-                #
-                # if t == "2":
-                #     self.Pause2()
-                #
-                # if t == "3":
-                #     self.Pause3()
-                #
-                # if t == "4":
-                #     self.Pause4()
-                #
-                # if t == "5":
-                #     self.Pause5()
-                #
-                # if t == "6":
-                #     self.Pause6()
+    def refreshing(self):
+        self.label.setGeometry(QtCore.QRect(1700, new_places[places.index(new_places[1])], 150, 50))
+        self.label_2.setGeometry(QtCore.QRect(1700, new_places[places.index(new_places[2])], 150, 50))
+        self.label_3.setGeometry(QtCore.QRect(1700, new_places[places.index(new_places[3])], 150, 50))
+        self.label_4.setGeometry(QtCore.QRect(1700, new_places[places.index(new_places[4])], 150, 50))
+        self.label_5.setGeometry(QtCore.QRect(1700, new_places[places.index(new_places[5])], 150, 50))
+        self.label_6.setGeometry(QtCore.QRect(1700, new_places[places.index(new_places[6])], 150, 50))
+        self.textBrowser.setGeometry(QtCore.QRect(50, new_places[places.index(new_places[1])], 1000, 80))
+        self.textBrowser_2.setGeometry(QtCore.QRect(50, new_places[places.index(new_places[2])], 1000, 80))
+        self.textBrowser_3.setGeometry(QtCore.QRect(50, new_places[places.index(new_places[3])], 1000, 80))
+        self.textBrowser_4.setGeometry(QtCore.QRect(50, new_places[places.index(new_places[4])], 1000, 80))
+        self.textBrowser_5.setGeometry(QtCore.QRect(50, new_places[places.index(new_places[5])], 1000, 80))
+        self.textBrowser_6.setGeometry(QtCore.QRect(50, new_places[places.index(new_places[6])], 1000, 80))
+
 
     def add_functions(self):
         self.timer = QTimer(self.centralwidget)
         # # adding action to timer
         self.timer.timeout.connect(self.showTime)
         # # update the timer every tenth second
-        self.timer.start(93)
+        self.timer.start(10)
         self.start_btn.clicked.connect(lambda: self.Start())
-        self.stop_btn.clicked.connect(lambda: self.Reset())
+        self.stop_btn.clicked.connect(lambda: self.Stop())
+        self.reset_btn.clicked.connect(lambda: self.Reset())
         self.pause_btn_1.clicked.connect(lambda: self.Pause1())
         self.pause_btn_2.clicked.connect(lambda: self.Pause2())
         self.pause_btn_3.clicked.connect(lambda: self.Pause3())
         self.pause_btn_4.clicked.connect(lambda: self.Pause4())
         self.pause_btn_5.clicked.connect(lambda: self.Pause5())
         self.pause_btn_6.clicked.connect(lambda: self.Pause6())
-        self.Port.addItems(lambda :self.serial_ports())
-
+        # self.Port.addItems(lambda :self.serial_ports())
 
     def Pause1(self):
         self.flag1 = False
+        self.counter += 1
+        k = places.pop(places.index(new_places[1]))
+        places.insert(self.counter, k)
+        # places.insert(1, places.pop(places.index(new_places[self.counter])))
+
+        self.refreshing()
+        print(self.counter)
+        print('1')
+        print(places)
+        print(new_places)
+
 
     def Pause2(self):
         self.flag2 = False
+        self.counter += 1
+        k = places.pop(places.index(new_places[2]))
+        places.insert(self.counter, k)
+        # places.insert(2, places.pop(places.index(new_places[self.counter])))
+        self.refreshing()
+        print(self.counter)
+        print('2')
+        print(places)
+        print(new_places)
+
 
     def Pause3(self):
         self.flag3 = False
+        self.counter += 1
+        k = places.pop(places.index(new_places[3]))
+        places.insert(self.counter, k)
+        # places.insert(3, places.pop(places.index(new_places[self.counter])))
+        self.refreshing()
+        print(self.counter)
+        print('3')
+        print(places)
+        print(new_places)
 
     def Pause4(self):
         self.flag4 = False
+        self.counter += 1
+        k = places.pop(places.index(new_places[4]))
+        places.insert(self.counter, k)
+        # places.insert(4, places.pop(places.index(new_places[self.counter])))
+        self.refreshing()
+        print(self.counter)
+        print('4')
+        print(places)
+        print(new_places)
 
     def Pause5(self):
         self.flag5 = False
+        self.counter += 1
+        k = places.pop(places.index(new_places[5]))
+        places.insert(self.counter, k)
+        # places.insert(5, places.pop(places.index(new_places[self.counter])))
+        self.refreshing()
+        print(self.counter)
+        print('5')
+        print(places)
+        print(new_places)
 
     def Pause6(self):
         self.flag6 = False
+        self.counter += 1
+        k = places.pop(places.index(new_places[6]))
+        places.insert(self.counter, k)
+        # places.insert(6, places.pop(places.index(new_places[self.counter])))
+        self.refreshing()
+        print(self.counter)
+        print('6')
+        print(places)
+        print(new_places)
+
 
     def Start(self):
         self.flag1 = True
@@ -255,13 +362,28 @@ class Ui_MainWindow(object):
         self.flag5 = True
         self.flag6 = True
 
-    def Reset(self):
+    def Stop(self):
         self.flag1 = False
         self.flag2 = False
         self.flag3 = False
         self.flag4 = False
         self.flag5 = False
         self.flag6 = False
+
+    def Reset(self):
+        self.counter = 0
+        self.flag1 = False
+        self.counter1 = 0
+        self.flag2 = False
+        self.counter2 = 0
+        self.flag3 = False
+        self.counter3 = 0
+        self.flag4 = False
+        self.counter4 = 0
+        self.flag5 = False
+        self.counter5 = 0
+        self.flag6 = False
+        self.counter6 = 0
 
     def showTime(self):
         # checking if flag is true
@@ -278,14 +400,14 @@ class Ui_MainWindow(object):
         if self.flag6:
             self.counter6 += 1
 
-    # getting text from count
-        text1 = str(self.counter1 / 10)
-        text2 = str(self.counter2 / 10)
-        text3 = str(self.counter3 / 10)
-        text4 = str(self.counter4 / 10)
-        text5 = str(self.counter5 / 10)
-        text6 = str(self.counter6 / 10)
-    # showing text
+        # getting text from count
+        text1 = str(self.counter1 / 100)
+        text2 = str(self.counter2 / 100)
+        text3 = str(self.counter3 / 100)
+        text4 = str(self.counter4 / 100)
+        text5 = str(self.counter5 / 100)
+        text6 = str(self.counter6 / 100)
+        # showing text
         self.label.setText(text1)
         self.label_2.setText(text2)
         self.label_3.setText(text3)
@@ -293,30 +415,43 @@ class Ui_MainWindow(object):
         self.label_5.setText(text5)
         self.label_6.setText(text6)
 
-    def serial_ports(self):
-        """ Lists serial port names
-            :raises EnvironmentError:
-                On unsupported or unknown platforms
-            :returns:
-                A list of the serial ports available on the system
-        """
-        if sys.platform.startswith('win'):
-            ports = ['COM%s' % (i + 1) for i in range(256)]
-        else:
-            raise EnvironmentError('Unsupported platform')
+    def check_serial_event(self):
+        serial_thread = threading.Timer(0.1, self.check_serial_event)
+        # if ser.is_open == True:
+        # serial_thread.start()
+        # if ser.in_waiting:
+        #     t = ser.read().decode('utf-8')
+        #     # t = t[:t.find('/n')]
+        #     print(t)
+        #     if t == '1' and self.flag1:
+        #
+        #         self.counter += 1
+        #         self.Pause1()
+        #
+        #     if t == '2' and self.flag2:
+        #         self.counter += 1
+        #         self.Pause2()
+        #
+        #     if t == "3" and self.flag3:
+        #         self.counter += 1
+        #         self.Pause3()
+        #
+        #     if t == "4" and self.flag4:
+        #         self.counter += 1
+        #         self.Pause4()
+        #
+        #     if t == "5" and self.flag5:
+        #         self.counter += 1
+        #         self.Pause5()
+        #
+        #     if t == "6" and self.flag6:
+        #         self.counter += 1
+        #         self.Pause6()
 
-        result = []
-        for port in ports:
-            try:
-                s = serial.Serial(port)
-                s.close()
-                result.append(port)
-            except (OSError, serial.SerialException):
-                pass
-        return result
 
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
