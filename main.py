@@ -10,6 +10,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets, QtSerialPort
 from PyQt5.QtCore import *
+from PyQt5.QtGui import QImage, QPalette, QBrush
 # import serial
 import threading
 
@@ -58,8 +59,13 @@ class Ui_MainWindow(object):
 
         MainWindow.setObjectName("MainWindow")
         # MainWindow.resize(1000, 620)
+        oImage = QImage("134.jpg")
+        palette = QPalette()
+        palette.setBrush(QPalette.Window, QBrush(oImage))
+        MainWindow.setPalette(palette)
         MainWindow.showMaximized()
-        MainWindow.setStyleSheet("background-color: rgb(255, 255, 255);")
+        # MainWindow.setStyleSheet("background-color: rgb(255, 255, 255);")
+
         self.Port = QtWidgets.QComboBox(MainWindow)
         self.Port.setGeometry(QtCore.QRect(10, 580, 381, 31))
         self.Port.setObjectName("Port")
@@ -283,13 +289,8 @@ class Ui_MainWindow(object):
         self.counter += 1
         k = places.pop(places.index(new_places[1]))
         places.insert(self.counter, k)
-        # places.insert(1, places.pop(places.index(new_places[self.counter])))
-
         self.refreshing()
-        print(self.counter)
-        print('1')
-        print(places)
-        print(new_places)
+
 
 
     def Pause2(self):
@@ -297,61 +298,35 @@ class Ui_MainWindow(object):
         self.counter += 1
         k = places.pop(places.index(new_places[2]))
         places.insert(self.counter, k)
-        # places.insert(2, places.pop(places.index(new_places[self.counter])))
         self.refreshing()
-        print(self.counter)
-        print('2')
-        print(places)
-        print(new_places)
-
 
     def Pause3(self):
         self.flag3 = False
         self.counter += 1
         k = places.pop(places.index(new_places[3]))
         places.insert(self.counter, k)
-        # places.insert(3, places.pop(places.index(new_places[self.counter])))
         self.refreshing()
-        print(self.counter)
-        print('3')
-        print(places)
-        print(new_places)
 
     def Pause4(self):
         self.flag4 = False
         self.counter += 1
         k = places.pop(places.index(new_places[4]))
         places.insert(self.counter, k)
-        # places.insert(4, places.pop(places.index(new_places[self.counter])))
         self.refreshing()
-        print(self.counter)
-        print('4')
-        print(places)
-        print(new_places)
 
     def Pause5(self):
         self.flag5 = False
         self.counter += 1
         k = places.pop(places.index(new_places[5]))
         places.insert(self.counter, k)
-        # places.insert(5, places.pop(places.index(new_places[self.counter])))
         self.refreshing()
-        print(self.counter)
-        print('5')
-        print(places)
-        print(new_places)
 
     def Pause6(self):
         self.flag6 = False
         self.counter += 1
         k = places.pop(places.index(new_places[6]))
         places.insert(self.counter, k)
-        # places.insert(6, places.pop(places.index(new_places[self.counter])))
         self.refreshing()
-        print(self.counter)
-        print('6')
-        print(places)
-        print(new_places)
 
 
     def Start(self):
